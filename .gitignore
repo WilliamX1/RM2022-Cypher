@@ -1,0 +1,8 @@
+# ignore all temp files
+*~
+
+# ignore all zips
+*.zip
+
+# ignore 环境配置文件包
+环境配置文件包
