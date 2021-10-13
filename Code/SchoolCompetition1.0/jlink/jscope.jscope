@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<JScopeProject>
+    <FileVersion major="1" minor="1" />
+    <Project>
+        <Configuration>
+            <JLink>
+                <Options Connection="1" IsRTTSession="0" IsRTTWithTimeStamp="1" SamplingPeriod="100" SerialNo="0" JTAG_IRPre="-1" JTAG_DRPre="-1" IP="" TargetDevice="stm32f407ig" TargetInterface="SWD" InterfaceSpeed="4000" />
+            </JLink>
+            <ScriptFile Name="F:\rm_stm32\RM_Frame_C\RM_Frame_C\jlink\jscope.jscope\unspecified" />
+            <ElfFile Name="F:\rm_stm32\RM_Frame_C\RM_Frame_C\MDK-ARM\RM_Frame_C\RM_Frame_C.axf" />
+            <DataFile Name="" />
+            <RawFile Name="" />
+            <Scope>
+                <Options TimeResolutionUs="10000" />
+            </Scope>
+        </Configuration>
+        <Windows>
+            <Graph Show="1" />
+            <Watch Show="1" />
+        </Windows>
+        <SelectedSymbols>
+            <Symbol>
+                <Options Name="key_last_stamp" Address="0x20000398" Type="uint" TypeID="8" Size="4" GraphColorRed="255" GraphColorGreen="215" GraphColorBlue="0" YMinSampled="0" YMaxSampled="0" YAvgSampled="0" Offset="4" ShowInGraph="0" ACCoupling="0" YOffset="200" IsAutoConfig="1" YResolution="50000" MaxValue="100000" File="../Src\main.c" Scope="0" DrawStyle="0" />
+            </Symbol>
+            <Symbol>
+                <Options Name="key_raw_state" Address="0x20000008" Type="volatile uchar" TypeID="6" Size="1" GraphColorRed="0" GraphColorGreen="255" GraphColorBlue="0" YMinSampled="1" YMaxSampled="1" YAvgSampled="1" Offset="8" ShowInGraph="0" ACCoupling="0" YOffset="200" IsAutoConfig="1" YResolution="1" MaxValue="2" File="../Src\main.c" Scope="0" DrawStyle="0" />
+            </Symbol>
+            <Symbol>
+                <Options Name="calibrationCnt" Address="0x20000038" Type="uint" TypeID="8" Size="4" GraphColorRed="102" GraphColorGreen="102" GraphColorBlue="178" YMinSampled="200" YMaxSampled="200" YAvgSampled="200" Offset="9" ShowInGraph="0" ACCoupling="0" YOffset="200" IsAutoConfig="1" YResolution="50" MaxValue="204" File="../Src\main.c" Scope="1" DrawStyle="0" />
+            </Symbol>
+            <Symbol>
+                <Options Name="vccMoni" Address="0x20000400" Type="volatile float" TypeID="1" Size="4" GraphColorRed="160" GraphColorGreen="32" GraphColorBlue="240" YMinSampled="2" YMaxSampled="2" YAvgSampled="2" Offset="13" ShowInGraph="0" ACCoupling="0" YOffset="200" IsAutoConfig="1" YResolution="5" MaxValue="10" File="../Src\main.c" Scope="0" DrawStyle="0" />
+            </Symbol>
+            <Symbol>
+                <Options Name="vrefValue" Address="0x20000044" Type="uint" TypeID="8" Size="4" GraphColorRed="255" GraphColorGreen="0" GraphColorBlue="0" YMinSampled="1473" YMaxSampled="1473" YAvgSampled="1473" Offset="17" ShowInGraph="0" ACCoupling="0" YOffset="200" IsAutoConfig="1" YResolution="2000000000" MaxValue="-2147483648" File="../Src\main.c" Scope="1" DrawStyle="0" />
+            </Symbol>
+            <Symbol>
+                <Options Name="iDLE" Address="0x20000394" Type="volatile uint" TypeID="8" Size="4" GraphColorRed="0" GraphColorGreen="100" GraphColorBlue="0" YMinSampled="0" YMaxSampled="0" YAvgSampled="0" Offset="21" ShowInGraph="1" ACCoupling="0" YOffset="200" IsAutoConfig="1" YResolution="1" MaxValue="2" File="../Src\stm32f4xx_it.c" Scope="0" DrawStyle="0" />
+            </Symbol>
+            <Symbol>
+                <Options Name="fre2" Address="0x20000054" Type="volatile uint" TypeID="8" Size="4" GraphColorRed="0" GraphColorGreen="100" GraphColorBlue="0" YMinSampled="72" YMaxSampled="72" YAvgSampled="72" Offset="25" ShowInGraph="1" ACCoupling="0" YOffset="200" IsAutoConfig="1" YResolution="20" MaxValue="88" File="../Src\stm32f4xx_it.c" Scope="0" DrawStyle="0" />
+            </Symbol>
+        </SelectedSymbols>
+    </Project>
+</JScopeProject>
