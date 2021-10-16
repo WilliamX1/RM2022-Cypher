@@ -5,7 +5,6 @@
 * [2022RM校内赛规则](./2022RM校内赛规则V1.1)
 * [第一次宣讲视频](https://www.bilibili.com/video/BV1JL411s76t?spm_id_from=333.999.0.0)
 * [底盘运动拆解分析](https://zhuanlan.zhihu.com/p/20282234)
-
 ## working log
 * 2021/10/2		创建 git 仓库，下载并查看校内赛规则
 * 2021/10/10	看完校内赛第一次宣讲视频
@@ -17,17 +16,24 @@
 ### 底盘运动控制
 * 4 个麦轮(45 度角) + 4 个 3508 电机
 * 参考[这篇文章](https://zhuanlan.zhihu.com/p/20282234)
+
 $$
 \vec{v} = \vec{v_t} + \vec\omega \times \vec{r}
 $$
 ![1.png](./resource/1.png)
+
+推导得出如下公式
 $$
-\begin{align}
-v_{FL} &= v_y - v_x + \omega(a + b) \\
-v_{FR} &= v_y + v_x - \omega(a + b) \\
-v_{BL} &= v_y - v_x - \omega(a + b) \\
-v_{BR} &= v_y + v_x - \omega(a + b) \\
-\end{align}
+v_{FL} = v_y - v_x + \omega(a + b)
+$$
+$$
+v_{FR} = v_y + v_x - \omega(a + b)
+$$
+$$
+v_{BL} = v_y - v_x - \omega(a + b)
+$$
+$$
+v_{BR} = v_y + v_x - \omega(a + b)
 $$
 
 * **a, b 相等于是控制速度的参数！**
