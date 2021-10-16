@@ -10,7 +10,7 @@ PID_Regulator_t pidRegulator = {//此为储存pid参数的结构体，四个底�
         .componentKpMax = 16384,
         .componentKiMax = 0,
         .componentKdMax = 0,
-        .outputMax = 16384 //3508电机输出电流上限，可以调小，勿调大
+        .outputMax = 16384 //3508电机输出电流上限 16384 ，可以调小，勿调大
 };
 
 MOTOR_INIT_t chassisMotorInit = {//四个底盘电机共用的初始化结构体
@@ -78,10 +78,11 @@ void WheelsSpeedCalc(float fbVelocity, float lrVelocity, float rtVelocity) {
      * @param fbVelocity,lrVelocity,rtVelocity
      * @return CMFLSpeed CMFRSpeed CMBLSpeed CMBRSpeed
      */
-    CMFLSpeed = 0;
-    CMFRSpeed = 0;
-    CMBLSpeed = 0;
-    CMBRSpeed = 0;
+		float aPLUSb = 1; /* 理论上是车的横竖两条半径之和，实际使用是作为车速的可调参数使用*/
+		CMFLSpeed = fbVelocity - lrVelocity + rtVelocity * aPLUSb; /* 左前轮线速度 */
+		CMFRSpeed = fbVelocity + lrVelocity - rtVelocity * aPLUSb; /* 右前轮线速度 */
+		CMBLSpeed = fbVelocity - lrVelocity - rtVelocity * aPLUSb; /* 左后轮线速度 */
+		CMBRSpeed = fbVelocity + lrVelocity + rtVelocity * aPLUSb; /* 右后轮线速度 */
 
     //计算四个轮子角速度，单位：rad/s
     CMFLSpeed = CMFLSpeed /(WHEEL_DIAMETER/2.0f);
