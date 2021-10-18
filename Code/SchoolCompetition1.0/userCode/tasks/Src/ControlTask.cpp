@@ -21,9 +21,9 @@ void CtrlHandle(){
                 }else if(RemoteControl::rcInfo.sRight == MID_POS) {
                     clawState = 1;
                 }
-				break;
-			case DOWN_POS:default:
-				break;
+								break;
+						case DOWN_POS:default: //左侧三挡
+								break;
         }
 
     }
