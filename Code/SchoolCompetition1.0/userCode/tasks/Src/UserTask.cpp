@@ -13,6 +13,16 @@ PID_Regulator_t userPidRegulator = {
         .outputMax = 10000 //2006电机输出电流上限，可以调小，勿调大
 };
 
+PID_Regulator_t userPidAngleRegulator = {
+				.kp = 10,
+				.ki = 0,
+				.kd = 0,
+				.componentKpMax = 100,
+				.componentKiMax = 0,
+				.componentKdMax = 0,
+				.outputMax = 1000
+};
+
 MOTOR_INIT_t userMotorInit = {
         .speedPIDp = &userPidRegulator,
         .anglePIDp = nullptr,

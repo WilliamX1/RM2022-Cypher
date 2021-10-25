@@ -8,8 +8,8 @@ PID_Regulator_t pidRegulator = {//此为储存pid参数的结构体，四个底�
         .ki = 0,
         .kd = 0,
         .componentKpMax = 16384,
-        .componentKiMax = 0,
-        .componentKdMax = 0,
+        .componentKiMax = 0, /* 需要调大，不然输出一直都是 0 */
+				.componentKdMax = 0, /* 需要调大，不然那输出一直都是 0 */
         .outputMax = 16384 //3508电机输出电流上限 16384 ，可以调小，勿调大
 };
 
