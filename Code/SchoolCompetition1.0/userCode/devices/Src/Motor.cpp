@@ -235,7 +235,6 @@ void Motor::MotorStateUpdate() {
 
     float realAngle = state.angle;
     float thisAngle = feedback.angle;
-    static int32_t lastRead = 0;
     if (thisAngle <= lastRead) {
         if (lastRead - thisAngle > 4000)
             realAngle += (thisAngle + 8192 - lastRead) * 360.0f / 8192.0f / reductionRatio;

@@ -3,6 +3,8 @@
 
 ## reference
 * [2022RM校内赛规则](./2022RM校内赛规则V1.1)
+* [RoboMaster 2022云汉杯校内赛电控框架说明文档 (1)](./Resource/RoboMaster 2022云汉杯校内赛电控框架说明文档 (1).pdf)
+* [校内赛电控第二次培训](./Resource/校内赛电控第二次培训.pdf)
 * [第一次宣讲视频](https://www.bilibili.com/video/BV1JL411s76t?spm_id_from=333.999.0.0)
 * [底盘运动拆解分析](https://zhuanlan.zhihu.com/p/20282234)
 ## working log
@@ -11,6 +13,8 @@
 * 2021/10/11	配置电控环境
 * 2021/10/13	学创碰头，编译成功校赛官方代码
 * 2021/10/16	参加学创电控第一次培训
+* 2021/11/3		学创调官方车
+* 2021/11/4		总结第一次调车文档之底盘控制
 
 ## task
 ### 底盘运动控制
@@ -24,10 +28,10 @@ $$
 
 推导得出如下公式
 $$
-v_{FL} = v_y - v_x + \omega(a + b)
+v_{FR} = v_y - v_x + \omega(a + b)
 $$
 $$
-v_{FR} = v_y + v_x - \omega(a + b)
+v_{FL} = v_y + v_x - \omega(a + b)
 $$
 $$
 v_{BL} = v_y - v_x - \omega(a + b)
@@ -45,10 +49,41 @@ $$
 /* 设定 a + b 是一个可调参数*/
 define a+b aPLUSb
 /* 四个轮子线速度，单位：m / s */
-CMFLSpeed = fbVelocity - lrVelocity + rtVelocity * aPLUSb; /* 左前轮线速度 */
-CMFRSpeed = fbVelocity + lrVelocity - rtVelocity * aPLUSb; /* 右前轮线速度 */
+CMFRSpeed = fbVelocity - lrVelocity + rtVelocity * aPLUSb; /* 左前轮线速度 */
+CMFLSpeed = fbVelocity + lrVelocity - rtVelocity * aPLUSb; /* 右前轮线速度 */
 CMBLSpeed = fbVelocity - lrVelocity - rtVelocity * aPLUSb; /* 左后轮线速度 */
 CMBRSpeed = fbVelocity + lrVelocity + rtVelocity * aPLUSb; /* 右后轮线速度 */
+```
+
+#### 调车方式
+* 先上电，短按开关一次（有亮灯），长按开关一次（有顺序亮灯），再打开开关上面的开关，即可开机，关机顺序相反。
+* 检查四个电桥所连接 **马达 ID **，检查方式是按旁边的按钮并观察闪烁次数，更改代码与之匹配。
+
+```C++
+/* ChassisTask 文件中 */
+/* MOTOR_ID_1 即与闪烁次数匹配即可 */
+Motor CMFL(MOTOR_ID_1,&chassisMotorInit);//定义左前轮电机
+Motor CMFR(MOTOR_ID_2,&chassisMotorInit);//定义右前轮电机
+Motor CMBL(MOTOR_ID_3,&chassisMotorInit);//定义左后轮电机
+Motor CMBR(MOTOR_ID_4,&chassisMotorInit);//定义右后轮电机
+```
+
+* 根据轮子转动方向来分别调节 `CMFLSpeed` ，`CMFRSpeed` ，`CMBLSpeed` ，`CMBRSpeed` 。现在所用是目前官方车的正确方向。
+
+先根据**前进**方向是否正确，分别确定每个轮子的 `fbVelocity` 的正负方向。
+
+根据**左右平移**方向是否正确，分别确定每个轮子的 `lrVelocity` 的正负方向。
+
+根据**顺逆旋转**方向是否正确，分别确定每个轮子的 `rtVelocity` 的正负方向。
+
+**_目前 `aPLUSb` 还没有调过。_**
+
+```C++
+/* ChassisTask 文件中 */
+CMFLSpeed = fbVelocity + lrVelocity + rtVelocity * aPLUSb; /* 左前轮线速度 */
+CMFRSpeed = -fbVelocity + lrVelocity + rtVelocity * aPLUSb; /* 右前轮线速度 */
+CMBLSpeed = fbVelocity - lrVelocity + rtVelocity * aPLUSb; /* 左后轮线速度 */
+CMBRSpeed = -fbVelocity - lrVelocity + rtVelocity * aPLUSb; /* 右后轮线速度 */
 ```
 
 ### 底盘电机 PID 调节
@@ -74,3 +109,9 @@ PID_Regulator_t pidRegulator = {//此为储存pid参数的结构体，四个底�
         .outputMax = 16384 //3508电机输出电流上限 16384 ，可以调小，勿调大
 };
 ```
+
+#### 调车方式
+$$
+componentKpMax + componentKiMax + componentKdMax = outputMax
+$$
+

@@ -111,6 +111,7 @@ private:
     void MotorStateUpdate();
 
     int16_t IntensityCalc();
+		int32_t lastRead;
 };
 /*结构体成员取值定义组------------------------------------------------------*/
 

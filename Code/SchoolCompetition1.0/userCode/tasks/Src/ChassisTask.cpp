@@ -4,11 +4,11 @@
 #include "ChassisTask.h"
 
 PID_Regulator_t pidRegulator = {//此为储存pid参数的结构体，四个底盘电机共用
-        .kp = 60,
-        .ki = 0,
+        .kp = 6,
+        .ki = 10,
         .kd = 0,
         .componentKpMax = 16384,
-        .componentKiMax = 0, /* 需要调大，不然输出一直都是 0 */
+        .componentKiMax = 100, /* 需要调大，不然输出一直都是 0 */
 				.componentKdMax = 0, /* 需要调大，不然那输出一直都是 0 */
         .outputMax = 16384 //3508电机输出电流上限 16384 ，可以调小，勿调大
 };
@@ -66,9 +66,9 @@ void ChassisStop(){
     CMBL.Stop();
     CMBR.Stop();
 }
+    float CMFLSpeed, CMFRSpeed, CMBLSpeed, CMBRSpeed;
 
 void WheelsSpeedCalc(float fbVelocity, float lrVelocity, float rtVelocity) {
-    float CMFLSpeed, CMFRSpeed, CMBLSpeed, CMBRSpeed;
 
     rtVelocity = RPM2RADpS(rtVelocity);
 
@@ -79,12 +79,13 @@ void WheelsSpeedCalc(float fbVelocity, float lrVelocity, float rtVelocity) {
      * @return CMFLSpeed CMFRSpeed CMBLSpeed CMBRSpeed
      */
 		float aPLUSb = 1; /* 理论上是车的横竖两条半径之和，实际使用是作为车速的可调参数使用*/
-		CMFLSpeed = fbVelocity - lrVelocity + rtVelocity * aPLUSb; /* 左前轮线速度 */
-		CMFRSpeed = fbVelocity + lrVelocity - rtVelocity * aPLUSb; /* 右前轮线速度 */
-		CMBLSpeed = fbVelocity - lrVelocity - rtVelocity * aPLUSb; /* 左后轮线速度 */
-		CMBRSpeed = fbVelocity + lrVelocity + rtVelocity * aPLUSb; /* 右后轮线速度 */
-
-    //计算四个轮子角速度，单位：rad/s
+	
+		CMFLSpeed = fbVelocity + lrVelocity + rtVelocity * aPLUSb; /* 左前轮线速度 */
+		CMFRSpeed = -fbVelocity + lrVelocity + rtVelocity * aPLUSb; /* 右前轮线速度 */
+		CMBLSpeed = fbVelocity - lrVelocity + rtVelocity * aPLUSb; /* 左后轮线速度 */
+		CMBRSpeed = -fbVelocity - lrVelocity + rtVelocity * aPLUSb; /* 右后轮线速度 */
+		
+		//计算四个轮子角速度，单位：rad/s
     CMFLSpeed = CMFLSpeed /(WHEEL_DIAMETER/2.0f);
     CMFRSpeed = CMFRSpeed /(WHEEL_DIAMETER/2.0f);
     CMBLSpeed = CMBLSpeed /(WHEEL_DIAMETER/2.0f);
