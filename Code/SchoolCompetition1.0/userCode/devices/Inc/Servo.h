@@ -13,7 +13,7 @@
 #define GET_SERVO_POS(ID)  (uint32_t)(log2(ID))
 /*枚举类型定义------------------------------------------------------------*/
 typedef enum{
-    POSITION_180,SPEED_360
+    POSITION_180,SPEED_360, POSITION_270
 }SERVO_TYPE_E;
 /*结构体定义--------------------------------------------------------------*/
 /*
@@ -56,6 +56,8 @@ public:
     void stop();
 
     void SetTargetAngle(float _targetAngle);
+
+		float GetCurrentAngle() { return targetAngle; };
 
     void Handle() override;
 };

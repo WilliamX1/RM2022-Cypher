@@ -9,7 +9,9 @@
 #include "Servo.h"
 #include "Motor.h"
 /*枚举类型定义------------------------------------------------------------*/
-
+enum SERVOKIND {
+	ChassisCenter, ChassisDoor, ClawCenter, ClawPanningLeft, ClawPanningRight, ClawSpinLeft, ClawSpinRight
+};
 
 /*结构体定义--------------------------------------------------------------*/
 
@@ -24,4 +26,6 @@ extern Servo ClawServo,TurnLServo,TurnRServo,ShovelLServo,ShovelRServo;
 void UserStop();
 void UserHandle();
 void UserInit();
+void SpinTo(enum SERVOKIND kind, float t);
+void SpinAdd(enum SERVOKIND kind, float t);
 #endif //RM_FRAME_C_USERTASK_H
