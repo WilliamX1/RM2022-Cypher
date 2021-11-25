@@ -20,17 +20,17 @@ void CtrlHandle(){
 		
 		else if (RemoteControl::rcInfo.sRight == MID_POS) { //右侧二挡，舵机调试控制模式
 			
-			int ch = 0;
+			int ch = 4; 
 			switch (ch) {
 				case 0:	/* 控制底盘转动舵机：测试程序 */
 				{
 					if (-0.5 < RemoteControl::rcInfo.left_col && RemoteControl::rcInfo.left_col < 0.5) ChassisCenterFlag = true;
 					else if (RemoteControl::rcInfo.left_col > 0.5 && ChassisCenterFlag) {
 						ChassisCenterFlag = false;
-						SpinTo(ChassisCenter, 90);
+						SpinTo(ChassisCenter, 0);
 					} else if (RemoteControl::rcInfo.left_col < -0.5 && ChassisCenterFlag) {
 						ChassisCenterFlag = false;
-						SpinTo(ChassisCenter, -90);
+						SpinTo(ChassisCenter, 180);
 					};
 					break;
 				}
@@ -39,10 +39,10 @@ void CtrlHandle(){
 					if (-0.5 < RemoteControl::rcInfo.left_col && RemoteControl::rcInfo.left_col < 0.5) ChassisDoorFlag = true;
 					else if (RemoteControl::rcInfo.left_col > 0.5 && ChassisDoorFlag) {
 						ChassisDoorFlag = false;
-						SpinTo(ChassisDoor, 90);
+						SpinAdd(ChassisDoor, 90);
 					} else if (RemoteControl::rcInfo.left_col < -0.5 && ChassisDoorFlag) {
 						ChassisDoorFlag = false;
-						SpinTo(ChassisDoor, -90);
+						SpinAdd(ChassisDoor, -90);
 					};
 					break;
 				}
@@ -51,12 +51,12 @@ void CtrlHandle(){
 					if (-0.5 < RemoteControl::rcInfo.left_col && RemoteControl::rcInfo.left_col < 0.5) ClawSpinFlag = true;
 					else if (RemoteControl::rcInfo.left_col > 0.5 && ClawSpinFlag) {
 						ClawSpinFlag = false;
-						SpinTo(ClawSpinLeft, 90);
-						SpinTo(ClawSpinRight, -90);
+						SpinAdd(ClawSpinLeft, 90);
+						SpinAdd(ClawSpinRight, -90);
 					} else if (RemoteControl::rcInfo.left_col < -0.5 && ClawSpinFlag) {
 						ClawSpinFlag = false;
-						SpinTo(ClawSpinLeft, -90);
-						SpinTo(ClawSpinRight, 90);
+						SpinAdd(ClawSpinLeft, -90);
+						SpinAdd(ClawSpinRight, 90);
 					};
 					break;
 				}
@@ -65,12 +65,12 @@ void CtrlHandle(){
 					if (-0.5 < RemoteControl::rcInfo.left_col && RemoteControl::rcInfo.left_col < 0.5) ClawPanningFlag = true;
 					else if (RemoteControl::rcInfo.left_col > 0.5 && ClawPanningFlag) {
 						ClawPanningFlag = false;
-						SpinTo(ClawPanningLeft, 90);
-						SpinTo(ClawPanningRight, -90);
+						SpinAdd(ClawPanningLeft, 90);
+						SpinAdd(ClawPanningRight, -90);
 					} else if (RemoteControl::rcInfo.left_col < -0.5 && ClawPanningFlag) {
 						ClawPanningFlag = false;
-						SpinTo(ClawPanningLeft, -90);
-						SpinTo(ClawPanningRight, 90);
+						SpinAdd(ClawPanningLeft, -90);
+						SpinAdd(ClawPanningRight, 90);
 					};
 					break;
 				}
@@ -79,10 +79,10 @@ void CtrlHandle(){
 					if (-0.5 < RemoteControl::rcInfo.left_col && RemoteControl::rcInfo.left_col < 0.5) ClawCenterFlag = true;
 					else if (RemoteControl::rcInfo.left_col > 0.5 && ClawCenterFlag) {
 						ClawCenterFlag = false;
-						SpinTo(ClawCenter, 90);
+						SpinAdd(ClawCenter, 90);
 					} else if (RemoteControl::rcInfo.left_col < -0.5 && ClawCenterFlag) {
 						ClawCenterFlag = false;
-						SpinTo(ClawCenter, -90);
+						SpinAdd(ClawCenter, -90);
 					};
 					break;
 				}
