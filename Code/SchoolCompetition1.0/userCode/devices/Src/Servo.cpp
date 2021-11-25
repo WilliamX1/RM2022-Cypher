@@ -41,7 +41,7 @@ Servo::Servo(SERVO_INIT_T *servoInit) {
     }else if(servoType == SPEED_360){
         duty = 0.075;
     } else if (servoType == POSITION_270) {
-				duty = AFFINE(0, 270, 0.05, 0.25, servoInit->firstAngle);
+				duty = AFFINE(0, 270, 0.05 / 2, 0.25 / 2, servoInit->firstAngle);
 		}
     auto pos = GET_SERVO_POS(deviceID);
 
@@ -99,7 +99,7 @@ void Servo::Handle() {
 
     } else if(servoType == POSITION_270) {
 			/* 自行增删修改 */
-			duty = AFFINE(0, 270, 0.05, 0.25, targetAngle);
+			duty = AFFINE(0, 270, 0.05 / 2, 0.25 / 2, targetAngle);
 			auto pos = GET_SERVO_POS(deviceID);
 			
 			__HAL_TIM_SET_COMPARE(servoInfo[pos].handleTypeDef,servoInfo[pos].timChannel,

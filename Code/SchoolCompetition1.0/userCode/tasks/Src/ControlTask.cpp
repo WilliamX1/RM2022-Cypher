@@ -20,7 +20,7 @@ void CtrlHandle(){
 		
 		else if (RemoteControl::rcInfo.sRight == MID_POS) { //右侧二挡，舵机调试控制模式
 			
-			int ch = 4; 
+			int ch = 1; 
 			switch (ch) {
 				case 0:	/* 控制底盘转动舵机：测试程序 */
 				{
@@ -164,35 +164,50 @@ void CtrlHandle(){
 						case DOWN_POS: //左侧三挡，手动舵机模式
 						{
 							/* 控制底盘旋转 */
-							if (RemoteControl::rcInfo.left_col > 0.5) {
-								SpinAdd(ChassisCenter, 5.0);
-							} else if (RemoteControl::rcInfo.left_col < -0.5) {
-								SpinTo(ChassisCenter, -5.0);
+							if (-0.5 < RemoteControl::rcInfo.left_col && RemoteControl::rcInfo.left_col < 0.5) ChassisCenterFlag = true;
+							else if (RemoteControl::rcInfo.left_col > 0.5 && ChassisCenterFlag) {
+								ChassisCenterFlag = false;
+								SpinAdd(ChassisCenter, 72.0);
+							} else if (RemoteControl::rcInfo.left_col < -0.5 && ChassisCenterFlag) {
+								ChassisCenterFlag = false;
+								SpinAdd(ChassisCenter, -72.0);
 							} else {};
 								
 							/* 控制机械臂夹紧 */
-							if (RemoteControl::rcInfo.left_rol > 0.5) {
-								SpinAdd(ClawCenter, 5.0);
-							} else if (RemoteControl::rcInfo.left_rol < -0.5) {
-								SpinAdd(ClawCenter, -5.0);
+							/* 可正常转动，向外松，向内紧，收紧需要调松 */
+							if (-0.5 < RemoteControl::rcInfo.left_rol && RemoteControl::rcInfo.left_rol < 0.5) ClawCenterFlag = true;
+							if (RemoteControl::rcInfo.left_rol > 0.5 && ClawCenterFlag) {
+								SpinTo(ClawCenter, 0.0);
+								ClawCenterFlag = false;
+							} else if (RemoteControl::rcInfo.left_rol < -0.5 && ClawCenterFlag) {
+								SpinTo(ClawCenter, 90.0);
+								ClawCenterFlag = false;
 							} else {};
 
 							/* 控制机械臂平移舵机移动，注意两个舵机方向相反 */
-							if (RemoteControl::rcInfo.right_col > 0.5) {
-								SpinAdd(ClawPanningLeft, 5.0);
-								SpinAdd(ClawPanningRight, -5.0);
-							} else if (RemoteControl::rcInfo.right_col < 0.5) {
-								SpinAdd(ClawPanningLeft, -5.0);
-								SpinAdd(ClawPanningRight, 5.0);
+								/* 有个舵机没有反应 */
+							if (-0.5 < RemoteControl::rcInfo.right_col && RemoteControl::rcInfo.right_col < 0.5) ClawPanningFlag = true;
+							else if (RemoteControl::rcInfo.right_col > 0.5 && ClawPanningFlag) {
+								ClawPanningFlag = false;
+								SpinAdd(ClawPanningLeft, 90.0);
+								SpinAdd(ClawPanningRight, -90.0);
+							} else if (RemoteControl::rcInfo.right_col < 0.5 && ClawPanningFlag) {
+								ClawPanningFlag = false;
+								SpinAdd(ClawPanningLeft, -90.0);
+								SpinAdd(ClawPanningRight, 90.0);
 							} else {};
 								
 							/* 控制机械臂爪子舵机翻转，注意两个舵机方向相反 */
-							if (RemoteControl::rcInfo.right_rol > 0.5) {
-								SpinAdd(ClawSpinLeft, 5.0);
-								SpinAdd(ClawSpinRight, -5.0);
-							} else if (RemoteControl::rcInfo.right_rol < -0.5) {
-								SpinAdd(ClawSpinLeft, -5.0);
-								SpinAdd(ClawSpinRight, 5.0);
+							/* 可正常转动，已经成功每次 90 度 */
+							if (-0.5 < RemoteControl::rcInfo.right_rol && RemoteControl::rcInfo.right_rol < 0.5) ClawSpinFlag = true;
+							else if (RemoteControl::rcInfo.right_rol > 0.5 && ClawCenterFlag) {
+								ClawSpinFlag = false;
+								SpinAdd(ClawSpinLeft, 90.0);
+								SpinAdd(ClawSpinRight, -90.0);
+							} else if (RemoteControl::rcInfo.right_rol < -0.5 && ClawCenterFlag) {
+								ClawSpinFlag = false;
+								SpinAdd(ClawSpinLeft, -90.0);
+								SpinAdd(ClawSpinRight, 90.0);
 							} else {};
 						}
 						default:

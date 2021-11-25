@@ -38,11 +38,11 @@ Motor UserMotor(MOTOR_ID_5,&userMotorInit);
 /* 底盘转盘舵机 */
 /* DS3230 270° */
 SERVO_INIT_T Servo_Center_Init = {		// 初始化函数名称
-	.servoType = POSITION_180,			// 需要自定义 270° 电机，在 Servo.cpp 中定义相关动作
+	.servoType = POSITION_270,			// 需要自定义 270° 电机，在 Servo.cpp 中定义相关动作
 	.servoID = SERVO_ID_1, 					// 舵机 ID: 由 SERVO_ID_1 ~ SERVO_ID_7 组成，与硬件接线有关，不可重复
 	.firstAngle = 0, 								// 开机角度：舵机初次上电时转到的角度
 	.angleLimit_Min = 0, 						// 最小角度：舵机可以转到的最小角度 
-	.angleLimit_Max = 180, 					// 最大角度：舵机可以转到的最大角度
+	.angleLimit_Max = 270, 					// 最大角度：舵机可以转到的最大角度
 };
 Servo ChassisCenterServo(&Servo_Center_Init); 	// 声明舵机，调用先前的初始化函数
 
@@ -59,11 +59,11 @@ Servo ChassisDoorServo(&Servo_FB_Init);		// 声明舵机，调用先前的初始
 
 /* 机械臂中心舵机 */
 SERVO_INIT_T Servo_Mid_Init = {		// 初始化函数名称
-	.servoType = POSITION_270,			// 需要自定义 270° 电机，在 Servo.cpp 中定义相关动作
+	.servoType = POSITION_180,			// 需要自定义 270° 电机，在 Servo.cpp 中定义相关动作
 	.servoID = SERVO_ID_3, 					// 舵机 ID: 由 SERVO_ID_1 ~ SERVO_ID_7 组成，与硬件接线有关，不可重复
 	.firstAngle = 0, 								// 开机角度：舵机初次上电时转到的角度
 	.angleLimit_Min = 0, 						// 最小角度：舵机可以转到的最小角度 
-	.angleLimit_Max = 270, 					// 最大角度：舵机可以转到的最大角度
+	.angleLimit_Max = 180, 					// 最大角度：舵机可以转到的最大角度
 };
 Servo ClawCenterServo(&Servo_Mid_Init);		// 声明舵机，调用先前的初始化函数
 
@@ -88,16 +88,18 @@ SERVO_INIT_T Servo_Panning_R_Init = {		// 初始化函数名称
 Servo ClawPanningRightServo(&Servo_Panning_R_Init);		// 声明舵机，调用先前的初始化函数
 
 /* 机械臂转动爪子（左边） */
+/* 可正常转动 */
 SERVO_INIT_T Servo_Spin_L_Init = {		// 初始化函数名称
-	.servoType = POSITION_270,			// 需要自定义 270° 电机，在 Servo.cpp 中定义相关动作
+	.servoType = POSITION_180,			// 需要自定义 270° 电机，在 Servo.cpp 中定义相关动作
 	.servoID = SERVO_ID_6, 					// 舵机 ID: 由 SERVO_ID_1 ~ SERVO_ID_7 组成，与硬件接线有关，不可重复
 	.firstAngle = 0, 								// 开机角度：舵机初次上电时转到的角度
 	.angleLimit_Min = 0, 						// 最小角度：舵机可以转到的最小角度 
-	.angleLimit_Max = 270, 					// 最大角度：舵机可以转到的最大角度
+	.angleLimit_Max = 180, 					// 最大角度：舵机可以转到的最大角度
 };
 Servo ClawSpinLeftServo(&Servo_Spin_L_Init);		// 声明舵机，调用先前的初始化函数
 
 /* 机械臂转动爪子（右边） */
+/* 可正常转动 */
 SERVO_INIT_T Servo_Spin_R_Init = {		// 初始化函数名称
 	.servoType = POSITION_180,			// 需要自定义 270° 电机，在 Servo.cpp 中定义相关动作
 	.servoID = SERVO_ID_7, 					// 舵机 ID: 由 SERVO_ID_1 ~ SERVO_ID_7 组成，与硬件接线有关，不可重复
@@ -159,9 +161,9 @@ void UserInit(){
 	ChassisDoorServo.SetTargetAngle(0);
 	ClawCenterServo.SetTargetAngle(0);
 	ClawPanningLeftServo.SetTargetAngle(0);  // ok
-	ClawPanningRightServo.SetTargetAngle(180);  // ok
+	ClawPanningRightServo.SetTargetAngle(45);  // ok
 	ClawSpinLeftServo.SetTargetAngle(0);
-	ClawSpinRightServo.SetTargetAngle(0);
+	ClawSpinRightServo.SetTargetAngle(70);
 }
 
 /***
