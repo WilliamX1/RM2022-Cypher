@@ -58,6 +58,10 @@ public:
     void SetTargetAngle(float _targetAngle);
 
 		float GetCurrentAngle() { return targetAngle; };
+		
+		float AngleMin() { return angleLimit_Min; };
+		
+		float AngleMax() { return angleLimit_Max; };
 
     void Handle() override;
 };

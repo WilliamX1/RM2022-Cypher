@@ -124,31 +124,42 @@ void UserStop(){
 	ClawSpinRightServo.stop();
 }
 
+float max(float a, float b) {
+	return a > b ? a : b;
+};
+
+float min(float a, float b) {
+	return a < b ? a : b;
+};
 
 void SpinTo(SERVOKIND kind, float t) {
+	t = max(0.0, t);
 	switch (kind) {
-		case ChassisCenter: ChassisCenterServo.SetTargetAngle(t); break;
-		case ChassisDoor: ChassisDoorServo.SetTargetAngle(t); break;
-		case ClawCenter: ClawCenterServo.SetTargetAngle(t); break;
-		case ClawPanningLeft: ClawPanningLeftServo.SetTargetAngle(t); break;
-		case ClawPanningRight: ClawPanningRightServo.SetTargetAngle(t); break;
-		case ClawSpinLeft: ClawSpinLeftServo.SetTargetAngle(t); break;
-		case ClawSpinRight: ClawSpinRightServo.SetTargetAngle(t); break;
+		case ChassisCenter: ChassisCenterServo.SetTargetAngle(			min(ChassisCenterServo.AngleMax(), 		max(ChassisCenterServo.AngleMin(),t))); break;
+		case ChassisDoor: ChassisDoorServo.SetTargetAngle(					min(ChassisDoorServo.AngleMax(), 			max(ChassisDoorServo.AngleMin(), t))); break;
+		case ClawCenter: ClawCenterServo.SetTargetAngle(						min(ClawCenterServo.AngleMax(), 			max(ClawCenterServo.AngleMin(), t))); break;
+		case ClawPanningLeft: ClawPanningLeftServo.SetTargetAngle(	min(ClawPanningLeftServo.AngleMax(), 	max(ClawPanningLeftServo.AngleMin(), t))); break;
+		case ClawPanningRight: ClawPanningRightServo.SetTargetAngle(min(ClawPanningRightServo.AngleMax(), max(ClawPanningRightServo.AngleMin(), t))); break;
+		case ClawSpinLeft: ClawSpinLeftServo.SetTargetAngle(				min(ClawSpinLeftServo.AngleMax(), 		max(ClawSpinLeftServo.AngleMin(), t))); break;
+		case ClawSpinRight: ClawSpinRightServo.SetTargetAngle(			min(ClawSpinRightServo.AngleMax(), 		max(ClawSpinRightServo.AngleMin(), t))); break;
 		default: break;
-	}
+	};
+	return;
 };
 
 void SpinAdd(SERVOKIND kind, float t) {
 	switch (kind) {
-			case ChassisCenter: ChassisCenterServo.SetTargetAngle(t + ChassisCenterServo.GetCurrentAngle()); break;
-			case ChassisDoor: ChassisDoorServo.SetTargetAngle(t + ChassisDoorServo.GetCurrentAngle()); break;
-			case ClawCenter: ClawCenterServo.SetTargetAngle(t + ClawCenterServo.GetCurrentAngle()); break;
-			case ClawPanningLeft: ClawPanningLeftServo.SetTargetAngle(t + ClawPanningLeftServo.GetCurrentAngle()); break;
-			case ClawPanningRight: ClawPanningRightServo.SetTargetAngle(t + ClawPanningRightServo.GetCurrentAngle()); break;
-			case ClawSpinLeft: ClawSpinLeftServo.SetTargetAngle(t + ClawSpinLeftServo.GetCurrentAngle()); break;
-			case ClawSpinRight: ClawSpinRightServo.SetTargetAngle(t + ClawSpinRightServo.GetCurrentAngle()); break;
+			case ChassisCenter: t += ChassisCenterServo.GetCurrentAngle(); break;
+			case ChassisDoor: t += ChassisDoorServo.GetCurrentAngle(); break;
+			case ClawCenter: t += ClawCenterServo.GetCurrentAngle(); break;
+			case ClawPanningLeft: t += ClawPanningLeftServo.GetCurrentAngle(); break;
+			case ClawPanningRight: t += ClawPanningRightServo.GetCurrentAngle(); break;
+			case ClawSpinLeft: t += ClawSpinLeftServo.GetCurrentAngle(); break;
+			case ClawSpinRight: t += ClawSpinRightServo.GetCurrentAngle(); break;
 			default: break;
-	}
+	};
+	SpinTo(kind, t);
+	return;
 };
 
 /***
@@ -160,8 +171,8 @@ void UserInit(){
 	ChassisCenterServo.SetTargetAngle(0);
 	ChassisDoorServo.SetTargetAngle(0);
 	ClawCenterServo.SetTargetAngle(0);
-	ClawPanningLeftServo.SetTargetAngle(0);  // ok
-	ClawPanningRightServo.SetTargetAngle(45);  // ok
+	ClawPanningLeftServo.SetTargetAngle(0);
+	ClawPanningRightServo.SetTargetAngle(45); /* 舵机有问题 */
 	ClawSpinLeftServo.SetTargetAngle(0);
 	ClawSpinRightServo.SetTargetAngle(70);
 }
