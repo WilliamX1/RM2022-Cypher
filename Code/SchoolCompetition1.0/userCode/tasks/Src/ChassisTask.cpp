@@ -4,12 +4,12 @@
 #include "ChassisTask.h"
 
 PID_Regulator_t pidRegulator = {//此为储存pid参数的结构体，四个底盘电机共用
-        .kp = 200,
-        .ki = 10,
+        .kp = 90,
+        .ki = 0.1,
         .kd = 0,
-        .componentKpMax = 8000,
-        .componentKiMax = 8000, /* 需要调大，不然输出一直都是 0 */
-				.componentKdMax = 0, /* 需要调大，不然那输出一直都是 0 */
+        .componentKpMax = 2000,
+        .componentKiMax = 2000, /* 需要调大，不然输出一直都是 0 */
+				.componentKdMax = 2000, /* 需要调大，不然那输出一直都是 0 */
         .outputMax = 16384 //3508电机输出电流上限 16384 ，可以调小，勿调大
 };
 
@@ -20,10 +20,10 @@ MOTOR_INIT_t chassisMotorInit = {//四个底盘电机共用的初始化结构体
         .reductionRatio = 19.0f,
         .ctrlType = SPEED_Single,
 };
-Motor CMFL(MOTOR_ID_1,&chassisMotorInit);//定义左前轮电机
-Motor CMFR(MOTOR_ID_2,&chassisMotorInit);//定义右前轮电机
-Motor CMBL(MOTOR_ID_3,&chassisMotorInit);//定义左后轮电机
-Motor CMBR(MOTOR_ID_4,&chassisMotorInit);//定义右后轮电机
+Motor CMFL(MOTOR_ID_4,&chassisMotorInit);//定义左前轮电机
+Motor CMFR(MOTOR_ID_3,&chassisMotorInit);//定义右前轮电机
+Motor CMBL(MOTOR_ID_2,&chassisMotorInit);//定义左后轮电机
+Motor CMBR(MOTOR_ID_1,&chassisMotorInit);//定义右后轮电机
 
 uint8_t ChassisStopFlag = 1;
 float FBVelocity,LRVelocity,RTVelocity;

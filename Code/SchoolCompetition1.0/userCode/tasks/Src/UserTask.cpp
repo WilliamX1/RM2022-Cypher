@@ -59,11 +59,11 @@ Servo ChassisDoorServo(&Servo_FB_Init);		// 声明舵机，调用先前的初始
 
 /* 机械臂中心舵机 */
 SERVO_INIT_T Servo_Mid_Init = {		// 初始化函数名称
-	.servoType = POSITION_180,			// 需要自定义 270° 电机，在 Servo.cpp 中定义相关动作
+	.servoType = POSITION_270,			// 需要自定义 270° 电机，在 Servo.cpp 中定义相关动作
 	.servoID = SERVO_ID_3, 					// 舵机 ID: 由 SERVO_ID_1 ~ SERVO_ID_7 组成，与硬件接线有关，不可重复
 	.firstAngle = 0, 								// 开机角度：舵机初次上电时转到的角度
 	.angleLimit_Min = 0, 						// 最小角度：舵机可以转到的最小角度 
-	.angleLimit_Max = 180, 					// 最大角度：舵机可以转到的最大角度
+	.angleLimit_Max = 270, 					// 最大角度：舵机可以转到的最大角度
 };
 Servo ClawCenterServo(&Servo_Mid_Init);		// 声明舵机，调用先前的初始化函数
 
@@ -168,13 +168,13 @@ void SpinAdd(SERVOKIND kind, float t) {
 void UserInit(){
 	/* 可以写入开机后一次性任务，例如舵机、电机转到初始角度，或者点击以某规律转动来检查电机状态是否正常 */
 	/* 将舵机转到 10° */
-	ChassisCenterServo.SetTargetAngle(0);
+	ChassisCenterServo.SetTargetAngle(240);
 	ChassisDoorServo.SetTargetAngle(0);
-	ClawCenterServo.SetTargetAngle(0);
-	ClawPanningLeftServo.SetTargetAngle(0);
-	ClawPanningRightServo.SetTargetAngle(45); /* 舵机有问题 */
-	ClawSpinLeftServo.SetTargetAngle(0);
-	ClawSpinRightServo.SetTargetAngle(70);
+	ClawCenterServo.SetTargetAngle(140); /* OKOK */
+	ClawPanningLeftServo.SetTargetAngle(180);
+	ClawPanningRightServo.SetTargetAngle(180); /* 同向了 */
+	ClawSpinLeftServo.SetTargetAngle(180); /* OKOK */
+	ClawSpinRightServo.SetTargetAngle(0);
 }
 
 /***

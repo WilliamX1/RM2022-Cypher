@@ -42,6 +42,8 @@ Servo::Servo(SERVO_INIT_T *servoInit) {
         duty = 0.075;
     } else if (servoType == POSITION_270) {
 				duty = AFFINE(0, 270, 0.05 / 2, 0.25 / 2, servoInit->firstAngle);
+		} else if (servoType == MG995) {
+			  duty = AFFINE(0,180,0.005,0.025, servoInit->firstAngle);
 		}
     auto pos = GET_SERVO_POS(deviceID);
 
@@ -103,6 +105,12 @@ void Servo::Handle() {
 			auto pos = GET_SERVO_POS(deviceID);
 			
 			__HAL_TIM_SET_COMPARE(servoInfo[pos].handleTypeDef,servoInfo[pos].timChannel,
+                              htim1.Instance->ARR*duty);
+		} else if (servoType == MG995) {
+			duty = AFFINE(0,180,0.005,0.025,targetAngle);
+        auto pos = GET_SERVO_POS(deviceID);
+
+        __HAL_TIM_SET_COMPARE(servoInfo[pos].handleTypeDef,servoInfo[pos].timChannel,
                               htim1.Instance->ARR*duty);
 		}
 }

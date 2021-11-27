@@ -13,7 +13,7 @@
 #define GET_SERVO_POS(ID)  (uint32_t)(log2(ID))
 /*枚举类型定义------------------------------------------------------------*/
 typedef enum{
-    POSITION_180,SPEED_360, POSITION_270
+    POSITION_180,SPEED_360, POSITION_270, MG995
 }SERVO_TYPE_E;
 /*结构体定义--------------------------------------------------------------*/
 /*

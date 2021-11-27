@@ -8,10 +8,13 @@ bool ChassisDoorFlag = true; 		/* 代表底盘关门舵机是否可用 */
 bool ClawSpinFlag = true; 			/* 代表夹爪翻转舵机是否可用 */
 bool ClawPanningFlag = true; 		/* 代表夹爪位移舵机是否可用 */
 bool ClawCenterFlag = true; 		/* 代表夹爪中心舵机是否可用 */
-bool AutoIn = true;							/* 代表自动化装矿是否可用 */
-bool AutoOut = true; 						/* 代表自动化丢出矿是否可用 */
+bool AutoInOut = true;					/* 代表自动化装矿是否可用 */
 bool AutoSpin = true;						/* 代表自动化旋转矿是否可用 */
+bool AutoUpDown = true; 				/* 从地上夹着举到头顶 */
+bool AutoPush = true;						/* 向前135°抛出 */
 
+int PushCount = 0;							/* 记录向前抛出时间 */ 
+int PrevPushCount = -1;					/* 记录向前抛出前一次时间*/
 void CtrlHandle(){
     if (RemoteControl::rcInfo.sRight == DOWN_POS){//右侧三档，急停模式
         ChassisStop();
@@ -95,135 +98,177 @@ void CtrlHandle(){
             case UP_POS:	//左侧一档，控制底盘运动
 								/* 右摇杆前后拨动控制灵敏性，右摇杆左右拨动控制灵敏性，左摇杆左右拨动控制灵敏性 */
 								/* * 后的是一个系数，可以调节到最舒适的手感 */
-                ChassisSetVelocity(RemoteControl::rcInfo.left_col*4.2,
-                                   RemoteControl::rcInfo.left_rol*4.2,RemoteControl::rcInfo.right_rol*60);
+                ChassisSetVelocity(RemoteControl::rcInfo.right_col*3.8,
+                                   RemoteControl::rcInfo.right_rol*3.8,RemoteControl::rcInfo.left_rol*50);
                 break;
             case MID_POS:	//左侧二档，自动化控制 + 微调舵机模式
 						{
 							/* 控制机械臂完成抓取并放入车内 */
-							if (-0.9 < RemoteControl::rcInfo.left_col && RemoteControl::rcInfo.left_col < 0.9) {}
-								// AutoIn = AutoOut = true;
-							else if (RemoteControl::rcInfo.left_col > 0.9 && AutoIn)	{ /* 装矿 */
-								AutoIn = false;
-								/* 夹紧爪子 */
-								SpinTo(ClawCenter, 90);
-								/* 再开门 */
-								SpinTo(ChassisDoor, 180);
-								/* 平移舵机位移，使得爪子在框上方 */
-								SpinTo(ClawPanningLeft, 180);
-								SpinTo(ClawPanningRight, 0);
+							//if (-0.9 < RemoteControl::rcInfo.left_col && RemoteControl::rcInfo.left_col < 0.9)
+								//AutoInOut = true;
+							//else if (RemoteControl::rcInfo.left_col > 0.9 && AutoInOut)	{ /* 装矿 */
+								//AutoInOut = false;
+								///* 松开爪子 */
+								//SpinTo(ClawCenter, 140);
+								///* 将爪子放下 */
+								//SpinTo(ClawPanningLeft, 0);
+								//SpinTo(ClawPanningRight, 0);
+								///* 夹紧爪子 */
+								//SpinTo(ClawCenter, 50);
+								///* 再开门 */
+								//SpinTo(ChassisDoor, 180);
+								///* 平移舵机位移，使得爪子在框上方 */
+								//SpinTo(ClawPanningLeft, 180);
+								//SpinTo(ClawPanningRight, 180);
 								/* 松开爪子 */
-								SpinTo(ClawCenter, 0);
-								/* 平移舵机位移，使得爪子归位 */
-								SpinTo(ClawPanningLeft, 0);
-								SpinTo(ClawPanningRight, 180);
+								//SpinTo(ClawCenter, 140);
+								/* 爪子归位 */
+								//SpinTo(ClawPanningLeft, 90);
+								//SpinTo(ClawPanningRight, 90);
 								/* 再关门 */
-								SpinTo(ChassisDoor, 0);
+								//SpinTo(ChassisDoor, 0);
 								/* 旋转底盘使得空闲盒子在等待位置 */
-								SpinAdd(ChassisCenter, 90);
-								AutoIn = true;
-							} else if (RemoteControl::rcInfo.left_col < -0.9) { /* 将框取出放到地上 */
-								AutoIn = false;
+								//SpinAdd(ChassisCenter, 90);
+								//AutoInOut = true;
+							//} else if (RemoteControl::rcInfo.left_col < -0.9 && AutoInOut) { /* 将框取出放到地上 */
+								//AutoInOut = false;
 								/* 松开爪子 */
-								SpinTo(ClawCenter, 0);
+								//SpinTo(ClawCenter, 140);
 								/* 平移舵机位移，使得爪子在框上方 */
-								SpinTo(ClawPanningLeft, 180);
-								SpinTo(ClawPanningRight, 0);
+								//SpinTo(ClawPanningLeft, 180);
+								//SpinTo(ClawPanningRight, 180);
 								/* 夹紧爪子 */
-								SpinTo(ClawCenter, 90);
-								/* 平移舵机位移，使得爪子归位 */
-								SpinTo(ClawPanningLeft, 0);
-								SpinTo(ClawPanningRight, 180);
+								//SpinTo(ClawCenter, 50);
+								/* 平移舵机位移，使得爪子放在地上 */
+								//SpinTo(ClawPanningLeft, 0);
+								//SpinTo(ClawPanningRight, 0);
+								/* 松开爪子 */
+								//SpinTo(ClawCenter, 140);
+								/* 爪子归位 */
+								//SpinTo(ClawPanningLeft, 90);
+								//SpinTo(ClawPanningRight, 90);
 								/* 旋转底盘使得有球盒子在等待位置 */
-								SpinAdd(ChassisCenter, -90);
-								AutoOut = true;
-							} else {};
+								//SpinAdd(ChassisCenter, -90);
+								//AutoInOut = true;
+							//} else {};
 							
-							/* 控制机械臂微小平移，注意两个舵机方向相反 */
-							if (-0.3 < RemoteControl::rcInfo.right_col && RemoteControl::rcInfo.right_col < 0.3) ClawPanningFlag = true;
-							else if (RemoteControl::rcInfo.right_col > 0.3) {
-								RemoteControl::rcInfo.right_col = false;
-								SpinAdd(ClawPanningLeft, 5.0);
-								SpinAdd(ClawPanningRight, -5.0);
-							} else if (RemoteControl::rcInfo.right_col < 0.3) {
-								RemoteControl::rcInfo.right_col = false;
-								SpinAdd(ClawPanningLeft, -5.0);
-								SpinAdd(ClawPanningRight, 5.0);
-							} else {};
 							
-							/* 控制机械臂微小翻转，注意两个舵机方向相反 */
-							if (-0.3 < RemoteControl::rcInfo.right_rol && RemoteControl::rcInfo.right_rol < 0.3) ClawSpinFlag = true;
-							else if (RemoteControl::rcInfo.right_rol > 0.3) {
-								ClawSpinFlag = false;
-								SpinAdd(ClawSpinLeft, 5.0);
-								SpinAdd(ClawSpinRight, -5.0);
-							} else if (RemoteControl::rcInfo.right_rol < -0.3) {
-								ClawSpinFlag = false;
-								SpinAdd(ClawSpinLeft, -5.0);
-								SpinAdd(ClawSpinRight, 5.0);
-							} else {};
+							/* 从地上夹上 & 放到地上 */
+							//if (-0.5 < RemoteControl::rcInfo.right_col && RemoteControl::rcInfo.right_col < 0.5) AutoUpDown = true;
+							//else if (RemoteControl::rcInfo.right_col < -0.5 && AutoUpDown) {
+								//AutoUpDown = false;
+								/* 松开爪子 */
+								//SpinTo(ClawCenter, 140);
+								/* 将爪子放下 */
+								//SpinTo(ClawPanningLeft, 0);
+								//SpinTo(ClawPanningRight, 0);
+								/* 夹紧爪子 */
+								//SpinTo(ClawCenter, 50);
+								/* 举起爪子 */
+								//SpinTo(ClawPanningLeft, 90);
+								//SpinTo(ClawPanningRight, 90);
+							//} else if (RemoteControl::rcInfo.right_col > 0.5 && AutoUpDown) {
+								//AutoUpDown = false;
+								/* 将爪子放下 */
+								//SpinTo(ClawPanningLeft, 0);
+								//SpinTo(ClawPanningRight, 0);
+								/* 松开爪子 */
+								//SpinTo(ClawCenter, 140);
+								/* 举起爪子 */
+								//SpinTo(ClawPanningLeft, 90);
+								//SpinTo(ClawPanningRight, 90);
+							//} else {};
+								
+							/* 旋转方块 */
+							//if (-0.5 < RemoteControl::rcInfo.right_rol && RemoteControl::rcInfo.right_rol < 0.5) AutoSpin = true;
+							//else if (RemoteControl::rcInfo.right_rol > 0.5 && AutoSpin) {
+								//AutoSpin = false;
+								//SpinAdd(ClawSpinLeft, -90.0);
+								//SpinAdd(ClawSpinRight, 90.0);
+							//} else if (RemoteControl::rcInfo.right_rol < -0.5 && AutoSpin) {
+								//AutoSpin = false;
+								//SpinAdd(ClawSpinLeft,90.0);
+								//SpinAdd(ClawSpinRight, -90.0);
+							//}
 							
-							/* 控制机械臂微小夹紧，注意两个舵机方向相反*/
-							if (-0.3 < RemoteControl::rcInfo.dialWheel && RemoteControl::rcInfo.dialWheel < 0.3) ClawCenterFlag = true;
-							else if (RemoteControl::rcInfo.dialWheel > 0.3) {
-								ClawCenterFlag = false;
-								SpinAdd(ClawCenter, 5.0);
-							} else if (RemoteControl::rcInfo.dialWheel < -0.3) {
-								ClawCenterFlag = false;
-								SpinAdd(ClawCenter, -5.0);
-							} else {};
-
+							/* 左右移动盒子 */
+							//if (-0.5 < RemoteControl::rcInfo.left_rol && RemoteControl::rcInfo.left_rol < 0.5) ChassisCenterFlag = true;
+							//else if (RemoteControl::rcInfo.left_rol > 0.5 && ChassisCenterFlag) {
+								//ChassisCenterFlag = false;
+								//SpinTo(ChassisCenter, 240);
+							//} else if (RemoteControl::rcInfo.left_rol < -0.5 && ChassisCenterFlag) {
+								//ChassisCenterFlag = false;
+								//SpinTo(ChassisCenter, 0);
+							//} else {};
+							
 							break;
 						}
 						case DOWN_POS: //左侧三挡，手动舵机模式
 						{
 							/* 控制底盘旋转 */
 							/* 可正常转动，注意调节参数让其每次能够旋转 90 ° */
-							if (-0.5 < RemoteControl::rcInfo.left_col && RemoteControl::rcInfo.left_col < 0.5) ChassisCenterFlag = true;
+							//if (-0.5 < RemoteControl::rcInfo.left_col && RemoteControl::rcInfo.left_col < 0.5) ChassisCenterFlag = true;
+							//else if (RemoteControl::rcInfo.left_col > 0.5 && ChassisCenterFlag) {
+								//ChassisCenterFlag = false;
+								//SpinTo(ChassisCenter, 240);
+							//} else if (RemoteControl::rcInfo.left_col < -0.5 && ChassisCenterFlag) {
+								//ChassisCenterFlag = false;
+								//SpinTo(ChassisCenter, 0);
+							//} else {};
+							
+							/* 控制向前抛出 */
+							PushCount++;
+							if (PrevPushCount != -1 && PushCount - PrevPushCount > 400) {
+								PrevPushCount = -1;
+								SpinTo(ClawCenter, 140); /* 松爪子 */
+							} else if (-0.5 < RemoteControl::rcInfo.left_col && RemoteControl::rcInfo.left_col < 0.5) ChassisCenterFlag = true;
 							else if (RemoteControl::rcInfo.left_col > 0.5 && ChassisCenterFlag) {
 								ChassisCenterFlag = false;
-								SpinAdd(ChassisCenter, 72.0);
+								SpinTo(ClawPanningLeft, 75);
+								SpinTo(ClawPanningRight, 75);
+								PrevPushCount = PushCount;
 							} else if (RemoteControl::rcInfo.left_col < -0.5 && ChassisCenterFlag) {
 								ChassisCenterFlag = false;
-								SpinAdd(ChassisCenter, -72.0);
+								SpinTo(ClawPanningLeft, 180);
+								SpinTo(ClawPanningRight, 180);
+								SpinTo(ClawCenter, 140); /* 松爪子 */
 							} else {};
 								
 							/* 控制机械臂夹紧 */
-							/* 可正常转动，向外松，向内紧，收紧需要调松 */
-							if (-0.5 < RemoteControl::rcInfo.left_rol && RemoteControl::rcInfo.left_rol < 0.5) ClawCenterFlag = true;
-							if (RemoteControl::rcInfo.left_rol > 0.5 && ClawCenterFlag) {
+							/* 可正常转动，向外松，向内紧，收紧需要调松，OKOK */
+							if (-0.5 < RemoteControl::rcInfo.right_rol && RemoteControl::rcInfo.right_rol < 0.5) ClawCenterFlag = true;
+							if (RemoteControl::rcInfo.right_rol > 0.5 && ClawCenterFlag) {
 								ClawCenterFlag = false;
-								SpinTo(ClawCenter, 0.0);
-							} else if (RemoteControl::rcInfo.left_rol < -0.5 && ClawCenterFlag) {
+								SpinTo(ClawCenter, 140.0); // 松
+							} else if (RemoteControl::rcInfo.right_rol < -0.5 && ClawCenterFlag) {
 								ClawCenterFlag = false;
-								SpinTo(ClawCenter, 90.0);
+								SpinTo(ClawCenter, 55.0); // 紧
 							} else {};
 
-							/* 控制机械臂平移舵机移动，注意两个舵机方向相反 */
-							/* 有个舵机没有反应，可能损坏 */
+							/* 控制机械臂平移舵机移动，注意两个舵机方向相反, OKOK */
 							if (-0.5 < RemoteControl::rcInfo.right_col && RemoteControl::rcInfo.right_col < 0.5) ClawPanningFlag = true;
 							else if (RemoteControl::rcInfo.right_col > 0.5 && ClawPanningFlag) {
 								ClawPanningFlag = false;
-								SpinAdd(ClawPanningLeft, 90.0);
-								SpinAdd(ClawPanningRight, -90.0);
-							} else if (RemoteControl::rcInfo.right_col < 0.5 && ClawPanningFlag) {
-								ClawPanningFlag = false;
 								SpinAdd(ClawPanningLeft, -90.0);
+								SpinAdd(ClawPanningRight, -90.0);
+							} else if (RemoteControl::rcInfo.right_col < -0.5 && ClawPanningFlag) {
+								ClawPanningFlag = false;
+								SpinAdd(ClawPanningLeft, 90.0);
 								SpinAdd(ClawPanningRight, 90.0);
 							} else {};
 								
-							/* 控制机械臂爪子舵机翻转，注意两个舵机方向相反 */
+							/* 控制机械臂爪子舵机翻转，注意两个舵机方向相反, OKOK */
 							/* 可正常转动，已经成功每次 90 度 */
-							if (-0.5 < RemoteControl::rcInfo.right_rol && RemoteControl::rcInfo.right_rol < 0.5) ClawSpinFlag = true;
-							else if (RemoteControl::rcInfo.right_rol > 0.5 && ClawCenterFlag) {
-								ClawSpinFlag = false;
-								SpinAdd(ClawSpinLeft, 90.0);
-								SpinAdd(ClawSpinRight, -90.0);
-							} else if (RemoteControl::rcInfo.right_rol < -0.5 && ClawCenterFlag) {
-								ClawSpinFlag = false;
-								SpinAdd(ClawSpinLeft, -90.0);
-								SpinAdd(ClawSpinRight, 90.0);
-							} else {};
+							//if (-0.5 < RemoteControl::rcInfo.right_rol && RemoteControl::rcInfo.right_rol < 0.5) ClawSpinFlag = true;
+							//else if (RemoteControl::rcInfo.right_rol > 0.5 && ClawSpinFlag) {
+								//ClawSpinFlag = false;
+								//SpinAdd(ClawSpinLeft, -90.0);
+								//SpinAdd(ClawSpinRight, 90.0);
+							//} else if (RemoteControl::rcInfo.right_rol < -0.5 && ClawSpinFlag) {
+								//ClawSpinFlag = false;
+								//SpinAdd(ClawSpinLeft,90.0);
+								//SpinAdd(ClawSpinRight, -90.0);
+							//} else {};
 						}
 						default:
 								break;
