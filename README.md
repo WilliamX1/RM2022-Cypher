@@ -18,6 +18,10 @@
 * 2021/11/10          学创调自己车底盘，连接电调和中心板。
 * 2021/11/23          学创调整舵机。
 * 2021/11/24          学创调试舵机，失败，完成大部分代码，PID 未调节好。
+* 2021/11/26          学创调车，赛前准备。
+* 2021/11/27          第一个比赛日。
+* 2021/11/28          第二个比赛日。
+* 2021/12/1            整理代码和文档。
 
 ## task
 ### 底盘运动控制
@@ -163,3 +167,164 @@ PWM 用于连接控制舵机。
 
 ![主控板](./Resource/主控板.png)
 
+### 舵机调控
+
+**定义舵机。**
+
+```C
+/* UserTask.cpp */
+SERVO_INIT_T Servo_Center_Init = {		// 初始化函数名称
+	.servoType = POSITION_180,			// 需要自定义 270° 电机，在 Servo.cpp 中定义相关动作
+	.servoID = SERVO_ID_1, 					// 舵机 ID: 由 SERVO_ID_1 ~ SERVO_ID_7 组成，与硬件接线有关，不可重复
+	.firstAngle = 0, 								// 开机角度：舵机初次上电时转到的角度
+	.angleLimit_Min = 0, 						// 最小角度：舵机可以转到的最小角度 
+	.angleLimit_Max = 180, 					// 最大角度：舵机可以转到的最大角度
+};
+Servo ChassisCenterServo(&Servo_Center_Init); 	// 声明舵机，调用先前的初始化函数
+```
+
+270 ° 舵机需要在 Servo.cpp 中自行定义。
+
+**使用舵机**
+
+转动角度，避免超出范围。
+
+```C
+/* UserTask.cpp */
+void SpinTo(SERVOKIND kind, float t) {
+	t = max(0.0, t);
+	switch (kind) {
+		case ChassisCenter: ChassisCenterServo.SetTargetAngle(			min(ChassisCenterServo.AngleMax(), 		max(ChassisCenterServo.AngleMin(),t))); break;
+		...
+		default: break;
+	};
+	return;
+};
+
+void SpinAdd(SERVOKIND kind, float t) {
+	switch (kind) {
+        case ChassisCenter: t += ChassisCenterServo.GetCurrentAngle(); break;
+        ...
+        default: break;
+	};
+	SpinTo(kind, t);
+	return;
+};
+```
+
+**初始化舵机角度**
+
+由于舵机安装时并非 0 °刚好，所以需要不断调节合适度数以便舵机转动到正确初始位置。
+
+```C
+/***
+ * 在这里写入初始化内容
+ */
+void UserInit(){
+	/* 可以写入开机后一次性任务，例如舵机、电机转到初始角度，或者点击以某规律转动来检查电机状态是否正常 */
+	ClawCenterServo.SetTargetAngle(100); /* OKOK */
+	...
+}
+```
+
+**主循环任务**
+
+该框架循环执行时间是 1 ms。
+
+```C
+/***
+ * 用户自定义任务主循环
+ */
+void UserHandle(){
+	UserMotor.Handle();
+	/* 在这里放入 ServoXXX.Handle() 即可使舵机正常运行 */
+	ChassisCenterServo.Handle();
+	...
+}
+```
+
+### 遥控操作
+
+**急停模式**
+
+非常重要，在操作时若出现错乱，可通过急停模式来停下车上所有电机和舵机。检录时会检查。
+
+```C
+/* ControlTask.cpp */
+void CtrlHandle(){
+    if (RemoteControl::rcInfo.sRight == DOWN_POS) {
+    /* 右侧三档，急停模式 */
+        ChassisStop();
+        UserStop();
+	}
+	...
+}
+```
+
+**底盘控制档**
+
+用来操控底盘电机。
+
+```C
+/* ControlTask.cpp */
+switch (RemoteControl::rcInfo.sLeft) {
+	case UP_POS:	//左侧一档，控制底盘运动
+    /* 右摇杆前后拨动控制灵敏性，右摇杆左右拨动控制灵敏性，左摇杆左右拨动控制灵敏性 */
+    /* * 后的是一个系数，可以调节到最舒适的手感 */
+	ChassisSetVelocity(RemoteControl::rcInfo.right_col*3.8,
+RemoteControl::rcInfo.right_rol*3.8,RemoteControl::rcInfo.left_rol*50);
+	break;
+	...
+```
+
+**舵机控制档**
+
+通过遥控器上摇杆到达某个阈值则进行一次相应动作。
+
+```C
+/* 控制机械臂夹紧 */
+/* 可正常转动，向外松，向内紧，收紧需要调松，OKOK */
+if (-0.7 < RemoteControl::rcInfo.right_rol && RemoteControl::rcInfo.right_rol < 0.7) ClawCenterFlag = true;
+else if (RemoteControl::rcInfo.right_rol > 0.7 && ClawCenterFlag) {
+    ClawCenterFlag = false;
+    SpinTo(ClawCenter, 100.0); // 松
+} else if (RemoteControl::rcInfo.right_rol < -0.7 && ClawCenterFlag) {
+    ClawCenterFlag = false;
+    SpinTo(ClawCenter, 158.0); // 紧
+} else {};
+...
+```
+
+**舵机自动化控制**
+
+运用类时间序列，待上个动作发生完成后再给下个动作电机/舵机相应响应。
+
+```C
+/* 控制向前抛出 */
+PushCount++;
+if (PrevPushCount != -1 && PushCount - PrevPushCount > 400) {
+    PrevPushCount = -1;
+    SpinTo(ClawCenter, 100); /* 松爪子 */
+} else if (-0.5 < RemoteControl::rcInfo.left_col && RemoteControl::rcInfo.left_col < 0.5) ChassisCenterFlag = true;
+else if (RemoteControl::rcInfo.left_col > 0.5 && ChassisCenterFlag) {
+    ChassisCenterFlag = false;
+    SpinTo(ClawPanningLeft, 75);
+    SpinTo(ClawPanningRight, 75);
+    PrevPushCount = PushCount;
+    } else if (RemoteControl::rcInfo.left_col < -0.5 && ChassisCenterFlag) {
+    ChassisCenterFlag = false;
+    SpinTo(ClawPanningLeft, 180);
+    SpinTo(ClawPanningRight, 180);
+    SpinTo(ClawCenter, 100); /* 松爪子 */
+} else {};
+```
+
+### 比赛成果
+
+共 24 支队伍，第一天排位赛以小组 16 名进入淘汰赛。
+
+淘汰赛阶段两两组队，与排位第 12 名队伍组队，最终摘得亚军联盟。
+
+![1.jpg](./Image/1.jpg)
+
+![2.jpg](./Image/2.jpg)
