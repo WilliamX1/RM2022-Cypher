@@ -325,6 +325,10 @@ else if (RemoteControl::rcInfo.left_col > 0.5 && ChassisCenterFlag) {
 
 淘汰赛阶段两两组队，与排位第 12 名队伍组队，最终摘得亚军联盟。
 
-![1.jpg](./Image/1.jpg)
+![1.jpg](./Resource/1.jpg)
 
-![2.jpg](./Image/2.jpg)
+![2.jpg](./Resource/2.jpg)
+
+[推送：机甲大师校内赛 | 终章](https://mp.weixin.qq.com/s/ivoABEyw3nuaj-R-AAIfAg)
+
+[推送：“云汉杯”机甲大师校内赛圆满结束 上海交大与云汉芯城深化合作](https://mp.weixin.qq.com/s/SR0KuqpWzK-Be4fHJQh-2g)
