@@ -325,9 +325,9 @@ else if (RemoteControl::rcInfo.left_col > 0.5 && ChassisCenterFlag) {
 
 淘汰赛阶段两两组队，与排位第 12 名队伍组队，最终摘得亚军联盟。
 
-![1.jpg](./Resource/1.jpg)
+![1.jpg](./resource/1.jpg)
 
-![2.jpg](./Resource/2.jpg)
+![2.jpg](./resource/2.jpg)
 
 [推送：机甲大师校内赛 | 终章](https://mp.weixin.qq.com/s/ivoABEyw3nuaj-R-AAIfAg)
 
