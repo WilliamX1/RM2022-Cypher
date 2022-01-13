@@ -2,8 +2,8 @@
 
 ## reference
 * [2022RM校内赛规则](./2022RM校内赛规则V1.1)
-* [RoboMaster 2022云汉杯校内赛电控框架说明文档 (1)](./Resource/RoboMaster 2022云汉杯校内赛电控框架说明文档 (1).pdf)
-* [校内赛电控第二次培训](./Resource/校内赛电控第二次培训.pdf)
+* [RoboMaster 2022云汉杯校内赛电控框架说明文档 (1)](./resource/RoboMaster%202022云汉杯校内赛电控框架说明文档%20(1).pdf)
+* [校内赛电控第二次培训](./resource/校内赛电控第二次培训.pdf)
 * [第一次宣讲视频](https://www.bilibili.com/video/BV1JL411s76t?spm_id_from=333.999.0.0)
 * [底盘运动拆解分析](https://zhuanlan.zhihu.com/p/20282234)
 ## working log
